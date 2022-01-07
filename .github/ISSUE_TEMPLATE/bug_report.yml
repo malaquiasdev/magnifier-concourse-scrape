@@ -15,16 +15,16 @@ body:
   validations:
     required: true
 - type: dropdown
-    id: website
-    attributes:
-      label: Website
-      description: What website of our list are you find a bug?
-      options:
-        - none
-        - qconcursos
-        - pciconcursos
-    validations:
-      required: false
+  id: website
+  attributes:
+    label: Website
+    description: What website of our list are you find a bug?
+    options:
+      - none
+      - qconcursos
+      - pciconcursos
+  validations:
+    required: false
 - type: textarea
   id: bug-expectation
   attributes:
