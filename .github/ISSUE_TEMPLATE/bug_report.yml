@@ -5,7 +5,7 @@ labels: ["🥺 Needs Triage"]
 body:
   - type: markdown
      attributes:
-      value: |
+     value: |
         **Thanks for reporting an issue!** Please make sure you read our [issue guidelines]() first, then fill out the fields below.
   - type: textarea
       id: bug-description
