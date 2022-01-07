@@ -20,11 +20,11 @@ body:
     label: Website
     description: What website of our list are you find a bug?
     options:
-      - none
+      - nothing
       - qconcursos
       - pciconcursos
   validations:
-    required: false
+    required: true
 - type: textarea
   id: bug-expectation
   attributes:
