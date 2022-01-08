@@ -63,12 +63,15 @@ export async function scrappyQuestions(page: Page): Promise<any> {
         alternatives: [],
         answer: null
       };
+
       const enunciationElement = e.querySelector(
         "div.js-question.q-question > div.q-question-body > div.q-question-enunciation"
       );
+
       const enunciationImageElement = e.querySelector(
         "div.js-question.q-question > div.q-question-body > div.q-question-enunciation > img"
       );
+
       body.enunciation.description =
         enunciationElement !== null
           ? enunciationElement.textContent.replace("\n", "")
@@ -81,6 +84,7 @@ export async function scrappyQuestions(page: Page): Promise<any> {
       const alternativeIds = Array.from(
         e.querySelectorAll("span.q-option-item")
       ).map((el: any) => el.innerText);
+
       const alternativeContents = Array.from(
         e.querySelectorAll("div.q-item-enum.js-alternative-content")
       ).map((el: any) => {
@@ -108,11 +112,7 @@ export async function scrappyQuestions(page: Page): Promise<any> {
             : "",
         subjectName:
           subjectNameElement !== null
-            ? subjectNameElement
-                .getAttribute("text")
-                .split("\n")[1]
-                .trim()
-                .toLowerCase()
+            ? subjectNameElement.textContent.split("\n")[1].trim().toLowerCase()
             : "",
         ...info,
         ...body
