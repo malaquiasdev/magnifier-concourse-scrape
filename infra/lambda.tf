@@ -1,3 +1,12 @@
+resource "null_resource" "lambda_build_run" {
+  triggers = {
+    functions_folder = "${data.archive_file.functions_artefact.output_sha}"
+  }
+  provisioner "local-exec" {
+    command = "yarn run build"
+  }
+}
+
 resource "aws_lambda_function" "lambda_magnifier_scrape_qconcursos_questions_page" {
   function_name    = "${var.lambda_qconcursos_prefix_name}-questionspage"
   handler          = "./qconcrusos/questions/index.handler"
