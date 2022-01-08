@@ -1,7 +1,7 @@
 data "archive_file" "functions_artefact" {
   output_path = "files/functions.zip"
   type        = "zip"
-  source_dir  = "${local.lambdas_path}"
+  source_dir  = local.lambdas_path
 
   depends_on = [null_resource.lambda_build_run]
 }

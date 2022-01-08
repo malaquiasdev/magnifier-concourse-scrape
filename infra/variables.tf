@@ -14,15 +14,15 @@ variable "aws_account_id" {
 }
 
 variable "project_name" {
-  type = string
+  type    = string
   default = "magnifier-concourse-scrape"
 }
 
 variable "lambda_qconcursos_prefix_name" {
-  type = string
+  type    = string
   default = "magnifier-scrape-qconcursos"
 }
 variable "bucket_root_path" {
-  type = string
+  type    = string
   default = "magnifier-concourse-scrape-jqrts"
 }
