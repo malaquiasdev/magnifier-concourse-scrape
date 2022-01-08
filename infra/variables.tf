@@ -8,11 +8,6 @@ variable "aws_profile" {
   default = "default"
 }
 
-variable "envi_bucket_root_path" {
-  type = string
-  default = "enviproglue-jqrts"
-}
-
 variable "project_name" {
   type = string
   default = "magnifier-concourse-scrape"
@@ -21,4 +16,8 @@ variable "project_name" {
 variable "lambda_qconcursos_prefix_name" {
   type = string
   default = "magnifier-scrape-qconcursos"
+}
+variable "bucket_root_path" {
+  type = string
+  default = "magnifier-concourse-scrape-jqrts"
 }
