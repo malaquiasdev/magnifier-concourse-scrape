@@ -15,6 +15,10 @@ function normalize(event: any): any {
   };
 }
 
+function getFilter(url: string): string {
+  return url.split("?")[1];
+}
+
 export async function main(event): Promise<string> {
   logger.info(event);
   let nextPage = null;
@@ -31,7 +35,7 @@ export async function main(event): Promise<string> {
     logger.info(`currentPage - ${currentPage}`);
     logger.info(`nextPageUrl - ${nextPageUrl}`);
 
-    const questions = await scrappyQuestions(page);
+    const questions = await scrappyQuestions(page, getFilter(data.url));
     logger.info(questions);
 
     if (Array.isArray(questions) && questions.length > 0) {
@@ -41,10 +45,10 @@ export async function main(event): Promise<string> {
     }
 
     while (nextPage) {
-      await page.waitForTimeout((Math.floor(Math.random() * 14) + 7) * 1000);
+      await page.waitForTimeout((Math.floor(Math.random() * 12) + 7) * 1000);
 
       await page.evaluate(async () => {
-        await new Promise((resolve, reject) => {
+        await new Promise((resolve, _) => {
           var totalHeight = 0;
           var distance = 100;
           var timer = setInterval(() => {
@@ -72,7 +76,7 @@ export async function main(event): Promise<string> {
 
       logger.info(`nextPage - ${nextPage}`);
 
-      const questions = await scrappyQuestions(page);
+      const questions = await scrappyQuestions(page, getFilter(data.url));
       logger.info(questions);
 
       if (Array.isArray(questions) && questions.length > 0) {
