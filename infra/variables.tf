@@ -13,6 +13,11 @@ variable "envi_bucket_root_path" {
   default = "enviproglue-jqrts"
 }
 
+variable "project_name" {
+  type = string
+  default = "magnifier-concourse-scrape"
+}
+
 variable "lambda_qconcursos_prefix_name" {
   type = string
   default = "magnifier-scrape-qconcursos"
