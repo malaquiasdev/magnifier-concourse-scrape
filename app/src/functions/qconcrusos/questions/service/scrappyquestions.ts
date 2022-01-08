@@ -6,8 +6,7 @@ const QUESTIONS_LIST_SELECTOR =
 export async function scrappyQuestions(page: Page): Promise<any> {
   return page.evaluate((QUESTIONS_LIST_SELECTOR: string) => {
     const result = [];
-    const questionsElement = document.querySelectorAll(QUESTIONS_LIST_SELECTOR);
-    questionsElement.forEach((e: any) => {
+    document.querySelectorAll(QUESTIONS_LIST_SELECTOR).forEach((e: Element) => {
       //question headers
       const urlElement = e.querySelector(
         "div.q-question-header > div.q-ref > div > a"
@@ -24,14 +23,15 @@ export async function scrappyQuestions(page: Page): Promise<any> {
 
       //question infos
       const info = {
-        year: "noyear",
+        year: null,
         juryName: null,
         juryUrl: null,
-        organName: "noorgan",
+        organName: null,
         organUrl: null,
-        examName: "others",
+        examName: null,
         examUrl: null
       };
+
       e.querySelectorAll(
         "div.js-question.q-question > div.q-question-info > span"
       ).forEach((el: any) => {
@@ -71,10 +71,12 @@ export async function scrappyQuestions(page: Page): Promise<any> {
       );
       body.enunciation.description =
         enunciationElement !== null
-          ? enunciationElement.innerText.replace("\n", " ")
+          ? enunciationElement.textContent.replace("\n", "")
           : "";
       body.enunciation.image =
-        enunciationImageElement !== null ? enunciationImageElement.src : "";
+        enunciationImageElement !== null
+          ? enunciationImageElement.getAttribute("src")
+          : "";
 
       const alternativeIds = Array.from(
         e.querySelectorAll("span.q-option-item")
@@ -95,13 +97,22 @@ export async function scrappyQuestions(page: Page): Promise<any> {
       }
 
       result.push({
-        questionURL: urlElement !== null ? urlElement.href : "",
+        questionURL: urlElement !== null ? urlElement.getAttribute("href") : "",
         questionId:
-          idElement !== null ? idElement.text.split("Q")[1].trim() : null,
-        subjectURL: subjectUrlElement !== null ? subjectUrlElement.href : "",
+          idElement !== null
+            ? idElement.textContent.split("Q")[1].trim()
+            : null,
+        subjectURL:
+          subjectUrlElement !== null
+            ? subjectUrlElement.getAttribute("href")
+            : "",
         subjectName:
           subjectNameElement !== null
-            ? subjectNameElement.text.split("\n")[1].trim().toLowerCase()
+            ? subjectNameElement
+                .getAttribute("text")
+                .split("\n")[1]
+                .trim()
+                .toLowerCase()
             : "",
         ...info,
         ...body
