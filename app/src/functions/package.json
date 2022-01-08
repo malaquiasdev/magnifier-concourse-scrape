@@ -7,6 +7,7 @@
   "license": "Mozilla Public License 2.0",
   "private": false,
   "scripts": {
+    "dev": "rm -rf node_modules && yarn install",
     "build": "rm -rf ../../../build/ && rm -rf node_modules && yarn install --production && npx typescript",
     "zip": "yarn run build && zip -r function.zip ./functions/*  node_modules/"
   },"dependencies": {
