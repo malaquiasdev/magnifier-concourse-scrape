@@ -2,11 +2,13 @@ import AWS from "aws-sdk";
 import pino from "pino";
 
 const dynamoDBDocumentClient = new AWS.DynamoDB.DocumentClient();
-const unmarshall = data => AWS.DynamoDB.Converter.unmarshall(data);
+const unmarshall = (data) => AWS.DynamoDB.Converter.unmarshall(data);
 
-export async function save(data:any) {
+const TABLE_NAME = process.env["TABLE_NAME"];
+
+export async function save(data: any) {
   const params = {
-    TableName: "envipro_qconcursos_questions",
+    TableName: TABLE_NAME,
     Item: {
       ...data,
     },
@@ -14,20 +16,20 @@ export async function save(data:any) {
   await dynamoDBDocumentClient.put(params).promise();
 }
 
-export async function saveBatch(array:any) {
+export async function saveBatch(array: any) {
   const items = array.map((data) => {
     return {
       PutRequest: {
         Item: {
-         ...data
-        }
-      }
-    }
+          ...data,
+        },
+      },
+    };
   });
   var params = {
     RequestItems: {
-      "envipro_qconcursos_questions": items,
-    }
+      [TABLE_NAME]: items,
+    },
   };
 
   await dynamoDBDocumentClient.batchWrite(params).promise();

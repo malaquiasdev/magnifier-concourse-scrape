@@ -8,6 +8,11 @@ variable "aws_profile" {
   default = "default"
 }
 
+variable "aws_account_id" {
+  type    = string
+  default = "252311082662"
+}
+
 variable "project_name" {
   type = string
   default = "magnifier-concourse-scrape"

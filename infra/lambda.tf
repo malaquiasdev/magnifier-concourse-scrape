@@ -1,9 +1,10 @@
 resource "null_resource" "lambda_build_run" {
   triggers = {
-    functions_folder = "${data.archive_file.functions_artefact.output_sha}"
+    functions_folder = ".././app/src/functions"
   }
   provisioner "local-exec" {
-    command = "yarn run build"
+    working_dir = ".././app/src/functions"
+    command = "rm -rf node_modules && yarn install --production && npx typescript"
   }
 }
 
@@ -19,4 +20,9 @@ resource "aws_lambda_function" "lambda_magnifier_scrape_qconcursos_questions_pag
   s3_key = aws_s3_bucket_object.lambda_functions_bucket_object.key
   source_code_hash = data.archive_file.functions_artefact.output_base64sha256
   layers = [aws_lambda_layer_version.layer_components.arn]
+  environment {
+    variables = {
+      TABLE_NAME = "${var.project_name}-questions"
+    }
+  }
 }

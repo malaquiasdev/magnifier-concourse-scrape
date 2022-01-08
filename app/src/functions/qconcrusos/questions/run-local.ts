@@ -1,6 +1,6 @@
 import { handler } from "./index";
 
-//process.env["BUCKET_PATH"] = "enviproglue-jqrts";
+process.env["TABLE_NAME"] = "magnifier-concourse-scrape-questions";
 
 const event = {
   "pathParameters": {
