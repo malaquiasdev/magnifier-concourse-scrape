@@ -100,6 +100,24 @@ export async function scrappyQuestions(page: Page): Promise<any> {
         body.alternatives.push({ key, value });
       }
 
+      const deprecatedElement = e.querySelector("div.q-caption > span");
+      if (
+        (deprecatedElement &&
+          deprecatedElement.textContent
+            .toLocaleLowerCase()
+            .includes("questão desatualizada")) ||
+        (deprecatedElement &&
+          deprecatedElement.textContent
+            .toLocaleLowerCase()
+            .includes("questão anulada"))
+      ) {
+        console.log(
+          "questionURL",
+          urlElement !== null ? urlElement.getAttribute("href") : ""
+        );
+        return;
+      }
+
       result.push({
         questionURL: urlElement !== null ? urlElement.getAttribute("href") : "",
         questionId:

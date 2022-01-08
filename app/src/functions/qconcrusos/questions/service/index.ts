@@ -36,7 +36,7 @@ export async function main(event): Promise<string> {
     const questions = await scrappyQuestions(page);
     logger.info(questions);
 
-    if (questions && questions.length > 0) {
+    if (Array.isArray(questions) && !questions.length) {
       await saveBatch(questions);
     } else {
       throw Error("Questions not found");
@@ -77,7 +77,7 @@ export async function main(event): Promise<string> {
       const questions = await scrappyQuestions(page);
       logger.info(questions);
 
-      if (questions && questions.length > 0) {
+      if (Array.isArray(questions) && !questions.length) {
         await saveBatch(questions);
       } else {
         throw Error("Questions not found");
