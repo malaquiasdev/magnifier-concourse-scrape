@@ -10,7 +10,7 @@ resource "null_resource" "layer_install_dependencies" {
 }
 
 resource "aws_lambda_layer_version" "layer_components" {
-  layer_name = "components"
+  layer_name = "${var.lambda_qconcursos_prefix_name}-components"
   description = "All functions libs installed here" 
   s3_bucket = aws_s3_bucket.bucket_root.id
   s3_key = aws_s3_bucket_object.layer_components_bucket_object.key
