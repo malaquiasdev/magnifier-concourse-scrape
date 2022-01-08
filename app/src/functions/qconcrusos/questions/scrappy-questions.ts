@@ -3,7 +3,7 @@ import { Page } from "puppeteer";
 const QUESTIONS_LIST_SELECTOR =
   "body > div.q-root > main > div.container > div.q-questions-list.js-questions-list > div";
 
-export async function scrapyQuestions(page: Page): Promise<any> {
+export async function scrappyQuestions(page: Page): Promise<any> {
   return page.evaluate((QUESTIONS_LIST_SELECTOR: string) => {
     const result = [];
     const questionsElement = document.querySelectorAll(QUESTIONS_LIST_SELECTOR);

@@ -1,5 +1,4 @@
 import AWS from "aws-sdk";
-import pino from "pino";
 
 const dynamoDBDocumentClient = new AWS.DynamoDB.DocumentClient();
 const unmarshall = (data) => AWS.DynamoDB.Converter.unmarshall(data);

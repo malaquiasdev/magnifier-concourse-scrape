@@ -1,7 +1,7 @@
 import pino from "pino";
 import { createBrowser } from "../../components/browser";
 import { saveBatch } from "../../components/aws/dynamodb";
-import { scrapyQuestions } from "./scrapy-questions";
+import { scrappyQuestions } from "./scrappy-questions";
 import { getPagination } from "./get-pagination";
 
 const logger = pino();
@@ -33,7 +33,7 @@ async function main(event): Promise<string> {
     logger.info(`currentPage - ${currentPage}`);
     logger.info(`nextPageUrl - ${nextPageUrl}`);
 
-    const questions = await scrapyQuestions(page);
+    const questions = await scrappyQuestions(page);
     logger.info(questions);
 
     if (questions && questions.length > 0) {
@@ -74,7 +74,7 @@ async function main(event): Promise<string> {
 
       logger.info(`nextPage - ${nextPage}`);
 
-      const questions = await scrapyQuestions(page);
+      const questions = await scrappyQuestions(page);
       logger.info(questions);
 
       if (questions && questions.length > 0) {
