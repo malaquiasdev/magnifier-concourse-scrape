@@ -6,13 +6,26 @@ import { getPagination } from "./get-pagination";
 
 const logger = pino();
 
+function normalizeUrl(event: any): string {
+  if(event["Records"] !== null){
+    return event.Records[0].Sns.Message;
+  }
+
+  if (event["pathParameters"] !== null) {
+    return event.pathParameters.url;
+  }
+
+  return "";
+}
+
 async function main(event): Promise<string> {
-  logger.info(`Going to page - ${event.pathParameters.url}`);
+  logger.info(event);
+  logger.info(`Going to page - ${normalizeUrl(event)}`);
   let nextPage = null;
   const browser = await createBrowser();
   try {
     const page = await browser.newPage();
-    await page.goto(event.pathParameters.url, { waitUntil: "networkidle0" });
+    await page.goto(normalizeUrl(event), { waitUntil: "networkidle0" });
 
     const { currentPage, nextPageUrl } = await getPagination(page);
     nextPage = nextPageUrl;
@@ -31,7 +44,7 @@ async function main(event): Promise<string> {
 
     while (nextPage) {
       await page.waitForTimeout((Math.floor(Math.random() * 14) + 7) * 1000);
-      
+
       await page.evaluate(async () => {
         await new Promise((resolve, reject) => {
           var totalHeight = 0;
