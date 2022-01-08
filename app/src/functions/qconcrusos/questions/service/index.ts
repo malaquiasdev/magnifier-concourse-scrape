@@ -7,7 +7,7 @@ import { getPagination } from "./pagination";
 const logger = pino();
 
 function normalizeUrl(event: any): string {
-  if(event["Records"] !== null){
+  if (event["Records"] !== null) {
     return event.Records[0].Sns.Message;
   }
 

@@ -9,8 +9,8 @@ export async function save(data: any) {
   const params = {
     TableName: TABLE_NAME,
     Item: {
-      ...data,
-    },
+      ...data
+    }
   };
   await dynamoDBDocumentClient.put(params).promise();
 }
@@ -20,15 +20,15 @@ export async function saveBatch(array: any) {
     return {
       PutRequest: {
         Item: {
-          ...data,
-        },
-      },
+          ...data
+        }
+      }
     };
   });
   var params = {
     RequestItems: {
-      [TABLE_NAME]: items,
-    },
+      [TABLE_NAME]: items
+    }
   };
 
   await dynamoDBDocumentClient.batchWrite(params).promise();
