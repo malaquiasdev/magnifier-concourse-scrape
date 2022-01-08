@@ -1,33 +1,47 @@
 import { handler } from "./index";
 
-process.env["TABLE_NAME"] = "magnifier-concourse-scrape-questions";
-
 const event = {
-  pathParameters: {
-    url: "https://www.qconcursos.com/questoes-de-concursos/questoes?institute_ids%5B%5D=20&knowledge_area_ids%5B%5D=10&page=2"
+  level: 30,
+  time: 1641659800389,
+  pid: 9,
+  hostname: "169.254.61.61",
+  version: "2.0",
+  routeKey: "POST /v1/qconcursos/questions",
+  rawPath: "/v1/qconcursos/questions",
+  rawQueryString: "",
+  headers: {
+    accept: "*/*",
+    "accept-encoding": "gzip, deflate, br",
+    "content-length": "179",
+    "content-type": "application/json",
+    host: "",
+    "postman-token": "bde5a778-6325-4a34-8496-b78bed5736ba",
+    "user-agent": "PostmanRuntime/7.28.4",
+    "x-amzn-trace-id": "Root=1-61d9bd96-775538a14a8338ce7be12eb7",
+    "x-forwarded-for": "127.0.0.7",
+    "x-forwarded-port": "443",
+    "x-forwarded-proto": "https"
   },
-  Records: [
-    {
-      EventSource: "aws:sns",
-      EventVersion: "1.0",
-      EventSubscriptionArn:
-        "arn:aws:sns:sa-east-1:11111:test:67d2b442-ef5c-4e22-b1a5-3e18ef25e664",
-      Sns: {
-        Type: "Notification",
-        MessageId: "67d2b442-ef5c-4e22-b1a5-3e18ef25e664",
-        TopicArn: "arn:aws:sns:sa-east-1:11111:test",
-        Subject: null,
-        Message:
-          "https://www.qconcursos.com/questoes-de-concursos/questoes?institute_ids%5B%5D=20&knowledge_area_ids%5B%5D=10&page=38",
-        Timestamp: "2022-01-08T03:44:12.824Z",
-        SignatureVersion: "1",
-        Signature: "",
-        SigningCertUrl: "",
-        UnsubscribeUrl: "",
-        MessageAttributes: {}
-      }
-    }
-  ]
+  requestContext: {
+    accountId: "",
+    apiId: "",
+    domainName: "",
+    domainPrefix: "",
+    http: {
+      method: "POST",
+      path: "/v1/qconcursos/questions",
+      protocol: "HTTP/1.1",
+      sourceIp: "189.120.74.36",
+      userAgent: "PostmanRuntime/7.28.4"
+    },
+    requestId: "LoqPlg4lmjQEMog=",
+    routeKey: "POST /v1/qconcursos/questions",
+    stage: "$default",
+    time: "08/Jan/2022:16:36:38 +0000",
+    timeEpoch: 1641659798790
+  },
+  body: '{\n    "url": "https://www.qconcursos.com/questoes-de-concursos/questoes?institute_ids%5B%5D=20&knowledge_area_ids%5B%5D=10&page=38",\n    "mails": ["mateus.malaquias1@gmail.com"]\n}',
+  isBase64Encoded: false
 };
 
 handler(event);

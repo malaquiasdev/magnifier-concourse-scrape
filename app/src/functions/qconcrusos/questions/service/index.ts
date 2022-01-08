@@ -6,26 +6,24 @@ import { getPagination } from "./pagination";
 
 const logger = pino();
 
-function normalizeUrl(event: any): string {
-  if (event["Records"] !== null) {
-    return event.Records[0].Sns.Message;
-  }
-
-  if (event["pathParameters"] !== null) {
-    return event.pathParameters.url;
-  }
-
-  return "";
+function normalize(event: any): any {
+  return {
+    method: event["requestContext"]["http"]["method"],
+    data: event["body"] ? JSON.parse(event["body"]) : {},
+    querystring: event["queryStringParameters"] || {},
+    pathParameters: event["pathParameters"] || {}
+  };
 }
 
 export async function main(event): Promise<string> {
   logger.info(event);
-  logger.info(`Going to page - ${normalizeUrl(event)}`);
   let nextPage = null;
   const browser = await createBrowser();
   try {
+    const { data } = normalize(event);
     const page = await browser.newPage();
-    await page.goto(normalizeUrl(event), { waitUntil: "networkidle0" });
+    logger.info(`Going to page - ${data.url}`);
+    await page.goto(data.url, { waitUntil: "networkidle0" });
 
     const { currentPage, nextPageUrl } = await getPagination(page);
     nextPage = nextPageUrl;
@@ -36,7 +34,7 @@ export async function main(event): Promise<string> {
     const questions = await scrappyQuestions(page);
     logger.info(questions);
 
-    if (Array.isArray(questions) && !questions.length) {
+    if (Array.isArray(questions) && questions.length > 0) {
       await saveBatch(questions);
     } else {
       throw Error("Questions not found");
@@ -77,7 +75,7 @@ export async function main(event): Promise<string> {
       const questions = await scrappyQuestions(page);
       logger.info(questions);
 
-      if (Array.isArray(questions) && !questions.length) {
+      if (Array.isArray(questions) && questions.length > 0) {
         await saveBatch(questions);
       } else {
         throw Error("Questions not found");

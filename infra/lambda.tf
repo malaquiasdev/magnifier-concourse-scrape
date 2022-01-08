@@ -22,7 +22,15 @@ resource "aws_lambda_function" "lambda_magnifier_scrape_qconcursos_questions_pag
   layers           = [aws_lambda_layer_version.layer_components.arn]
   environment {
     variables = {
-      TABLE_NAME = "${var.project_name}-questions"
+      TABLE_NAME          = "${var.project_name}-questions"
+      QCONCURSOS_BASE_URL = "https://www.qconcursos.com"
     }
   }
+}
+
+resource "aws_lambda_permission" "lambda_magnifier_scrape_qconcursos_questions_page_api" {
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.lambda_magnifier_scrape_qconcursos_questions_page.arn
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "arn:aws:execute-api:${var.aws_region}:${var.aws_account_id}:*/*"
 }

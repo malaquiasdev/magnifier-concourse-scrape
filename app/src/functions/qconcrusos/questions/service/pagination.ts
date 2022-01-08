@@ -1,5 +1,7 @@
 import { Page } from "puppeteer";
 
+const QCONCURSOS_BASE_URL = "https://www.qconcursos.com";
+
 const CURRENT_PAGE_NUMBER_SELECTOR =
   "body > div.q-root > main > div.container > nav > div > a.q-current.btn.btn-default";
 const NEXT_PAGE_URL_SELECTOR =
@@ -39,6 +41,6 @@ export async function getPagination(page: Page): Promise<Pagination> {
 
   return {
     currentPage: normalizeCurrentPage(data.currentPage),
-    nextPageUrl: data.nextPageUrl
+    nextPageUrl: QCONCURSOS_BASE_URL.concat(data.nextPageUrl)
   };
 }

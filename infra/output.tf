@@ -21,3 +21,7 @@ output "lambdas" {
     }
   }]
 }
+
+output "apigateway_url" {
+  value = aws_apigatewayv2_stage.this.invoke_url
+}
