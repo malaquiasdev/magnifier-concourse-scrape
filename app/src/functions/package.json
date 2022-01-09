@@ -1,0 +1,31 @@
+{
+  "name": "functions",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/malaquiasdev/magnifier-concourse-scrape",
+  "author": "Mateus Malaquias",
+  "license": "Mozilla Public License 2.0",
+  "private": false,
+  "scripts": {
+    "fmt": "prettier --config .prettierrc './**/*.ts' --write",
+    "dev": "rm -rf node_modules && yarn install",
+    "build": "rm -rf ../../../build/ && rm -rf node_modules && yarn install --production && npx typescript",
+    "zip": "yarn run build && zip -r function.zip ./functions/*  node_modules/"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.1048.0",
+    "chrome-aws-lambda": "^10.1.0",
+    "dotenv": "^10.0.0",
+    "pino": "^7.6.1",
+    "puppeteer-core": "^13.0.1",
+    "puppeteer-extra": "^3.2.3",
+    "puppeteer-extra-plugin-stealth": "^2.9.0"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.8",
+    "prettier": "^2.5.1",
+    "puppeteer": "^13.0.1",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.5.4"
+  }
+}

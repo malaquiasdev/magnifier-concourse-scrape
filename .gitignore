@@ -119,6 +119,7 @@ web_modules/
 .yarn-integrity
 
 # dotenv environment variables file
+deploy.sh
 .env
 .env.test
 .env.production
@@ -133,6 +134,7 @@ out
 
 # Nuxt.js build / generate output
 .nuxt
+build
 dist
 
 # Gatsby files
@@ -182,6 +184,7 @@ dist
 
 ### Terraform ###
 # Local .terraform directories
+/infra/files
 **/.terraform/*
 **/files/*
 
