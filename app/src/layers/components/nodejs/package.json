@@ -6,6 +6,7 @@
   "dependencies": {
     "aws-sdk": "^2.1053.0",
     "chrome-aws-lambda": "^10.1.0",
+    "dotenv": "^10.0.0",
     "pino": "^7.6.2",
     "puppeteer-core": "^13.0.1",
     "puppeteer-extra": "^3.2.3",
