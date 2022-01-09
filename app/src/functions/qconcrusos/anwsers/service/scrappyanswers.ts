@@ -21,8 +21,8 @@ export async function scrappyAnswers(
 
   const correctAnswer = await pageLogged.evaluate((questionId: string) => {
     const rightAnswer = document.querySelector("span.js-question-right-answer");
-    if (rightAnswer) {
-      return rightAnswer.textContent !== "" ? rightAnswer.textContent : null;
+    if (rightAnswer && rightAnswer.textContent !== "") {
+      return rightAnswer.textContent;
     }
     return document
       .getElementsByName(`answer-question-${questionId}`)[0]
