@@ -3,30 +3,22 @@ import { createBrowser } from "../../../components/browser";
 import { saveBatch } from "../../../components/aws/dynamodb";
 import { scrappyQuestions } from "./scrappyquestions";
 import { getPagination } from "./pagination";
+import { normalize } from "../../../components/aws/event";
 
 const logger = pino();
-
-function normalize(event: any): any {
-  return {
-    method: event["requestContext"]["http"]["method"],
-    data: event["body"] ? JSON.parse(event["body"]) : {},
-    querystring: event["queryStringParameters"] || {},
-    pathParameters: event["pathParameters"] || {}
-  };
-}
 
 function getFilter(url: string): string {
   return url.split("?")[1];
 }
 
-export async function main(event): Promise<string> {
+export async function main(event): Promise<any> {
   logger.info(event);
   let nextPage = null;
   const browser = await createBrowser();
   try {
     const { data } = normalize(event);
-    const page = await browser.newPage();
     logger.info(`Going to page - ${data.url}`);
+    const page = await browser.newPage();
     await page.goto(data.url, { waitUntil: "networkidle0" });
 
     const { currentPage, nextPageUrl } = await getPagination(page);
@@ -87,7 +79,7 @@ export async function main(event): Promise<string> {
     }
 
     await browser.close();
-    return "done";
+    return { body: { filter: getFilter(data.url) } };
   } catch (error) {
     logger.error(error);
     await browser.close();
