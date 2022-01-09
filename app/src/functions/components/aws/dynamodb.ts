@@ -16,7 +16,7 @@ function convertRecordsToArray(data: any): any[] {
   return data.map((item) => unmarshall(item));
 }
 
-function convertRecordsToObject(data: any): any {
+export function convertRecordsToObject(data: any): any {
   if (!data) return undefined;
   if (Array.isArray(data)) return convertRecordsToArray(data);
   return unmarshall(data);
