@@ -1,9 +1,9 @@
 export type InputParams = {
-  method: string,
-  data: any,
-  querystring: any,
-  pathParameters: any
-}
+  method: string;
+  data: any;
+  querystring: any;
+  pathParameters: any;
+};
 
 export function normalize(event: any): InputParams {
   return {
