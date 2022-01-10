@@ -12,7 +12,7 @@ export class AudityEntity extends DynamoDBUtils {
   }
 
   public async save(audity: Audity): Promise<void> {
-    await this.put(audity);
+    await this.put(this.tableName, audity);
   }
 
   public async findByFilter(filter: string): Promise<Audity[]> {
