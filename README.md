@@ -7,24 +7,29 @@
 This project is a crawler/scraper to collect multiple data from webpages using Serverless Architecture.
 
 ## Prerequisites
+
 // TODO
 
 ## Service diagram
 
 <p align="left">
-  <img width="600" height="auto" src="doc/service-diagram.png"/>
+  <img width="600" height="auto" src="doc/qconcurso-service-diagram.png"/>
 </p>
 
 ## Installing
+
 // TODO
 
 ## Execute Local
+
 // TODO
 
 ## Deploy it in AWS
+
 // TODO
 
 ## Contributing
+
 // TODO
 
 ## Contributors
