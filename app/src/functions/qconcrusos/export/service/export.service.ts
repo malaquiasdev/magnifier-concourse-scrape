@@ -1,7 +1,7 @@
 import { DynamoDB } from "aws-sdk";
 import { convertRecordsToObject } from "../../../components/aws/dynamodb";
 import { createFileS3 } from "../../../components/aws/s3";
-import { CsvUtils } from "./csvutils";
+import { CsvUtils } from "./export.csvutils";
 
 export class ExportService {
   private dynamoDB: DynamoDB;
