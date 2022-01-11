@@ -10,7 +10,7 @@ dotenv.config({
 async function entrypointRunLocal() {
   const input: EntryPointInput = {
     url: "https://www.qconcursos.com/questoes-de-concursos/questoes?institute_ids%5B%5D=20&knowledge_area_ids%5B%5D=10&page=38",
-    mails: ["mateus.malaquias1@gmail.com"]
+    mails: ["x.xxxx@gmail.com"]
   };
 
   const context: Context = {

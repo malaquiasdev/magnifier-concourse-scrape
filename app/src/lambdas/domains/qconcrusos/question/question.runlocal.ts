@@ -32,8 +32,8 @@ async function questionServiceLocal() {
   };
 
   const input: EntryPointInput = {
-    url: "https://www.qconcursos.com/questoes-de-concursos/questoes?institute_ids%5B%5D=20&knowledge_area_ids%5B%5D=10&page=38",
-    mails: ["mateus.malaquias1@gmail.com"]
+    url: "https://www.qconcursos.com/questoes-de-concursos/questoes?institute_ids%5B%5D=20&knowledge_area_ids%5B%5D=10&page=2",
+    mails: ["x.aaa@gmail.com"]
   };
 
   const service = new QuestionService(context);

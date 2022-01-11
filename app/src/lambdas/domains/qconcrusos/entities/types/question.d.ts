@@ -31,9 +31,4 @@ export type Body = {
   answer: string;
 };
 
-export type Question = {
-  header: Header;
-  info: Info;
-  body: Body;
-  filter: string;
-};
+export type Question = Header | Info | Body | string;

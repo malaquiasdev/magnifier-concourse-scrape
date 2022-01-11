@@ -42,8 +42,7 @@ export class QuestionService {
         this.db
       );
       const questions = await questionScrapyListService.scrapyQuestions(url);
-      console.log("questions", questions);
-      //await browser.close();
+      await browser.close();
       return null;
     } catch (error) {
       await browser.close();
