@@ -20,16 +20,12 @@ export class EntryPointService {
   ): Promise<void> {
     try {
       const audity: Audity = {
-        requestId: context.awsRequestId,
         page: url,
         mails: mails,
-        functionName: context.functionName,
         serviceName: this.saveEntryPointSate.name,
-        filter: url.split("?")[1],
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        filter: url.split("?")[1]
       };
-      await new AudityEntity(this.db).save(audity);
+      await new AudityEntity(this.db, context).persist(audity);
     } catch (error) {
       this.logger.error(error);
       throw error;

@@ -1,10 +1,10 @@
 export type Audity = {
-  requestId: string;
-  page: string;
-  mails: string[];
-  functionName: string;
+  requestId?: string;
+  functionName?: string;
   serviceName: string;
   filter: string;
-  createdAt: string;
-  updatedAt: string;
+  page: string;
+  mails: string[];
+  createdAt?: string;
+  updatedAt?: string;
 };
