@@ -8,6 +8,7 @@ import { EntryPointInput } from "../../entrypoint/types/entrypoint.input";
 import { QuestionScrapyListService } from "./question.scrapy.list.service";
 import { Question } from "../../entities/types/question";
 import { QuestionEntity } from "../../entities/question.entity";
+import { Page } from "puppeteer";
 
 export class QuestionService {
   private db: Database;
@@ -51,6 +52,12 @@ export class QuestionService {
       } else {
         throw Error("Questions not found");
       }
+      await this.scrapyMoreQuestions(
+        page,
+        questionScrapyListService,
+        url,
+        pagination.nextPageUrl
+      );
       await browser.close();
       return questions;
     } catch (error) {
@@ -58,5 +65,54 @@ export class QuestionService {
       this.logger.error(error);
       throw error;
     }
+  }
+
+  private async scrapyMoreQuestions(
+    page: Page,
+    questionScrapyListService: QuestionScrapyListService,
+    url: string,
+    nextPageUrl: string
+  ): Promise<void> {
+    do {
+      this.logger.info(`Going to next page - ${nextPageUrl}`);
+      
+      await page.waitForTimeout((Math.floor(Math.random() * 12) + 7) * 1000);
+
+      await page.evaluate(async () => {
+        await new Promise((resolve, _) => {
+          var totalHeight = 0;
+          var distance = 100;
+          var timer = setInterval(() => {
+            var scrollHeight = document.body.scrollHeight;
+            window.scrollBy(0, distance);
+            totalHeight += distance;
+
+            if (totalHeight >= scrollHeight) {
+              clearInterval(timer);
+              resolve(totalHeight);
+            }
+          }, 100);
+        });
+      });
+
+      await page.click(
+        "body > div.q-root > main > div.container > nav > div > a.q-next.btn.btn-default"
+      );
+      await page.waitForSelector(
+        "body > div.q-root > main > div.container > div.q-questions-list.js-questions-list > div"
+      );
+
+      const pagination = await new QuestionPaginationService(
+        page
+      ).getPagination(this.baseUrl);
+      nextPageUrl = pagination.nextPageUrl;
+
+      const questions = await questionScrapyListService.scrapyQuestions(url);
+      if (Array.isArray(questions) && questions.length > 0) {
+        await this.questionEntity.batchPersist(questions);
+      } else {
+        throw Error("Questions not found");
+      }
+    } while (nextPageUrl);
   }
 }
