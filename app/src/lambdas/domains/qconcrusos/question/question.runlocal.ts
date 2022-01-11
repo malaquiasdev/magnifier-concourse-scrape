@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 import { Context } from "aws-lambda";
 import { QuestionService } from "./service/question.service";
+import { EntryPointInput } from "../entrypoint/types/entrypoint.input";
 
 dotenv.config({
   path: "../../.env"

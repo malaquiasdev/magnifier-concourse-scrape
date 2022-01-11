@@ -5,6 +5,7 @@ import { ChromiumBrowser } from "../../../../utils/chromium.browser";
 import { QuestionPaginationService } from "./question.pagination.service";
 import { QuestionAudity } from "./question.adutiy.service";
 import { EntryPointInput } from "../../entrypoint/types/entrypoint.input";
+import { QuestionScrapyListService } from "./question.scrapy.list.service";
 
 export class QuestionService {
   private db: Database;
@@ -36,7 +37,13 @@ export class QuestionService {
         this.main.name,
         this.context
       );
-      await browser.close();
+      const questionScrapyListService = new QuestionScrapyListService(
+        page,
+        this.db
+      );
+      const questions = await questionScrapyListService.scrapyQuestions(url);
+      console.log("questions", questions);
+      //await browser.close();
       return null;
     } catch (error) {
       await browser.close();
