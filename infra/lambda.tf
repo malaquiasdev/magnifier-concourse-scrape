@@ -4,6 +4,12 @@ data "archive_file" "layers_artefact" {
   source_dir  = "${local.layers_path}/dependencies"
 }
 
+data "archive_file" "functions_artefact" {
+  output_path = "files/functions.zip"
+  type        = "zip"
+  source_dir  = local.lambdas_path
+}
+
 resource "aws_lambda_layer_version" "this" {
   layer_name          = "${var.lambda_qconcursos_prefix_name}-layer"
   description         = "All functions libs installed here"

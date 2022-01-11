@@ -10,3 +10,10 @@ resource "aws_s3_bucket_object" "lambda_layer" {
   source = data.archive_file.layers_artefact.output_path
   etag   = filemd5(data.archive_file.layers_artefact.output_path)
 }
+
+resource "aws_s3_bucket_object" "lambda_functions" {
+  bucket = aws_s3_bucket.root.id
+  key    = "${var.project_name}-functions"
+  source = data.archive_file.functions_artefact.output_path
+  etag   = filemd5(data.archive_file.functions_artefact.output_path)
+}
