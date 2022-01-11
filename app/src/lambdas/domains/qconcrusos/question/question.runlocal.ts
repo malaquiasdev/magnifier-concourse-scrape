@@ -1,21 +1,15 @@
-import { EntryPointService } from "./entrypoint.service";
 import dotenv from "dotenv";
-import { EntryPointInput } from "./types/entrypoint.input";
 import { Context } from "aws-lambda";
+import { QuestionService } from "./service/question.service";
 
 dotenv.config({
   path: "../../.env"
 });
 
-async function entrypointRunLocal() {
-  const input: EntryPointInput = {
-    url: "https://www.qconcursos.com/questoes-de-concursos/questoes?institute_ids%5B%5D=20&knowledge_area_ids%5B%5D=10&page=38",
-    mails: ["mateus.malaquias1@gmail.com"]
-  };
-
+async function questionServiceLocal() {
   const context: Context = {
     callbackWaitsForEmptyEventLoop: false,
-    functionName: "entrypointRunLocal",
+    functionName: "questionServiceLocal",
     functionVersion: "",
     invokedFunctionArn: "",
     memoryLimitInMB: "",
@@ -36,8 +30,13 @@ async function entrypointRunLocal() {
     }
   };
 
-  const service = new EntryPointService();
-  await service.saveEntryPointSate(input, context);
+  const input: EntryPointInput = {
+    url: "https://www.qconcursos.com/questoes-de-concursos/questoes?institute_ids%5B%5D=20&knowledge_area_ids%5B%5D=10&page=38",
+    mails: ["mateus.malaquias1@gmail.com"]
+  };
+
+  const service = new QuestionService(context);
+  return service.main(input);
 }
 
-entrypointRunLocal();
+questionServiceLocal();
