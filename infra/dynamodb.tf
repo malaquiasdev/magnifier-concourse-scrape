@@ -11,9 +11,9 @@ resource "aws_dynamodb_table" "qconcursos_audity" {
 resource "aws_dynamodb_table" "qconcursos_questions" {
   name         = "${var.project_name}-questions"
   billing_mode = "PAY_PER_REQUEST"
-  hash_key     = "questionId"
+  hash_key     = "id"
   attribute {
-    name = "questionId"
+    name = "id"
     type = "S"
   }
 }

@@ -6,6 +6,8 @@ import { QuestionPaginationService } from "./question.pagination.service";
 import { QuestionAudity } from "./question.adutiy.service";
 import { EntryPointInput } from "../../entrypoint/types/entrypoint.input";
 import { QuestionScrapyListService } from "./question.scrapy.list.service";
+import { Question } from "../../entities/types/question";
+import { QuestionEntity } from "../../entities/question.entity";
 
 export class QuestionService {
   private db: Database;
@@ -13,6 +15,7 @@ export class QuestionService {
   private context: Context;
   private baseUrl: string;
   private questionAudity: QuestionAudity;
+  private questionEntity: QuestionEntity;
 
   constructor(context: Context) {
     this.db = new Database();
@@ -20,9 +23,10 @@ export class QuestionService {
     this.context = context;
     this.baseUrl = "https://www.qconcursos.com";
     this.questionAudity = new QuestionAudity(this.db, this.logger);
+    this.questionEntity = new QuestionEntity(this.db);
   }
 
-  public async main({ url, mails }: EntryPointInput): Promise<any> {
+  public async main({ url, mails }: EntryPointInput): Promise<Question[]> {
     this.logger.info(`Going to page - ${url}`);
     const browser = await ChromiumBrowser.create();
     try {
@@ -42,8 +46,13 @@ export class QuestionService {
         this.db
       );
       const questions = await questionScrapyListService.scrapyQuestions(url);
+      if (Array.isArray(questions) && questions.length > 0) {
+        await this.questionEntity.batchPersist(questions);
+      } else {
+        throw Error("Questions not found");
+      }
       await browser.close();
-      return null;
+      return questions;
     } catch (error) {
       await browser.close();
       this.logger.error(error);

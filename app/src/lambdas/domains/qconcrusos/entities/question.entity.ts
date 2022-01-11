@@ -14,15 +14,15 @@ export class QuestionEntity extends Entity {
   }
 
   public async batchPersist(questions: Question[]): Promise<void> {
-    await this.batchWrite(this.tableName, questions);
+    await super.batchWrite(this.tableName, questions);
   }
 
   public async persist(question: Question): Promise<void> {
-    await this.put(this.tableName, question);
+    await super.put(this.tableName, question);
   }
 
   public async findByFilterAndAnswerNull(filter: string): Promise<Question[]> {
     const query = `SELECT * FROM "${this.tableName}" WHERE "answer" IS NULL AND "filter" = '${filter}'`;
-    return this.executePartiQL(query);
+    return super.executePartiQL(query);
   }
 }
