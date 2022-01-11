@@ -37,3 +37,22 @@ resource "aws_lambda_function" "qconcursos_entrypoint" {
     }
   }
 }
+
+resource "aws_lambda_function" "qconcursos_question" {
+  function_name    = "${var.lambda_qconcursos_prefix_name}-question"
+  handler          = "./domains/qconcrusos/question/question.handler"
+  description      = ""
+  runtime          = "nodejs14.x"
+  timeout          = 200
+  memory_size      = 1024
+  role             = aws_iam_role.qconcursos_question.arn
+  s3_bucket        = aws_s3_bucket.root.id
+  s3_key           = aws_s3_bucket_object.lambda_functions.key
+  source_code_hash = data.archive_file.functions_artefact.output_base64sha256
+  layers           = [aws_lambda_layer_version.dependencies.arn]
+  environment {
+    variables = {
+      QUESTION_TABLE_NAME = aws_dynamodb_table.qconcursos_questions.name
+    }
+  }
+}
