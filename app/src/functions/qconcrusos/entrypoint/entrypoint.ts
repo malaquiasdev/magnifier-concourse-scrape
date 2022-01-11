@@ -10,6 +10,9 @@ function jsonSerializer(
 ): APIGatewayProxyResult {
   return {
     statusCode: statusCode,
+    headers: {
+      "Content-Type": "application/json; charset=utf-8"
+    },
     body: JSON.stringify(result)
   };
 }

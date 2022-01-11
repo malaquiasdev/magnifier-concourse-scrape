@@ -22,7 +22,7 @@ export class EntryPointService {
         requestId,
         page: url,
         mails: mails,
-        processName: this.saveEntryPointSate.name,
+        serviceName: this.saveEntryPointSate.name,
         filter: url.split("?")[1],
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()

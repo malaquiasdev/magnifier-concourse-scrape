@@ -2,7 +2,7 @@ export type Audity = {
   requestId: string;
   page: string;
   mails: string[];
-  processName: string;
+  serviceName: string;
   filter: string;
   createdAt: string;
   updatedAt: string;
