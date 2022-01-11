@@ -19,7 +19,7 @@ export class EntryPointService {
   ): Promise<void> {
     try {
       const audity: Audity = {
-        id: requestId,
+        requestId,
         page: url,
         mails: mails,
         processName: this.saveEntryPointSate.name,

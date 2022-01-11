@@ -1,5 +1,5 @@
 export type Audity = {
-  id: string;
+  requestId: string;
   page: string;
   mails: string[];
   processName: string;
