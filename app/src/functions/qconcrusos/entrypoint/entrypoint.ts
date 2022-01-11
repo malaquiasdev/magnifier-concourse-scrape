@@ -17,6 +17,16 @@ function jsonSerializer(
   };
 }
 
+function isUrl(url: string): boolean {
+  try {
+    new URL(url);
+    return true;
+  } catch (e) {
+    logger.error(e);
+    return false;
+  }
+}
+
 export async function handler(
   event: APIGatewayEvent,
   context: Context
@@ -25,7 +35,7 @@ export async function handler(
   logger.info(context);
 
   const body: EntryPointInput = JSON.parse(event.body ?? "{}");
-  if (!body.url || !body.mails) {
+  if (!isUrl(body.url) || !body.mails) {
     return jsonSerializer(400, { msg: "Bad Request" });
   }
   const service = new EntryPointService();
