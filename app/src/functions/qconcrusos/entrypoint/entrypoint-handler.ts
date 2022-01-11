@@ -1,4 +1,4 @@
-import { APIGatewayProxyResult, APIGatewayEvent, Context } from "aws-lambda";
+import { APIGatewayProxyResult, APIGatewayEvent } from "aws-lambda";
 import { EntryPointInput } from "../types/entrypoint.input";
 import { EntryPointService } from "./service/entrypoint.service";
 
@@ -15,6 +15,7 @@ function jsonSerializer(
 export async function handler(
   event: APIGatewayEvent
 ): Promise<APIGatewayProxyResult> {
+  console.log(event);
   const { requestId } = event.requestContext;
   const body: EntryPointInput = JSON.parse(event.body ?? "{}");
   if (!body.url || !body.mails) {
