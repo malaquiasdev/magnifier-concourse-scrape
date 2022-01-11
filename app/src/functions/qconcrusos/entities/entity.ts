@@ -1,13 +1,11 @@
-import * as dotenv from "dotenv";
-import AWS, { DynamoDB } from "aws-sdk";
+import AWS from "aws-sdk";
+import { Database } from "../../components/aws/database";
 
-dotenv.config();
+export abstract class Entity {
+  private db: Database;
 
-export class DynamoDBUtils {
-  private dynamodb: DynamoDB;
-
-  constructor() {
-    this.dynamodb = new AWS.DynamoDB({ region: process.env.AWS_REGION });
+  constructor(database: Database) {
+    this.db = database;
   }
 
   public async put(tableName: string, data: any): Promise<void> {
@@ -17,7 +15,7 @@ export class DynamoDBUtils {
         ...data
       }
     };
-    await this.dynamodb.putItem(params).promise();
+    await this.db.getClient().put(params).promise();
   }
 
   public async batchWrite(tableName: string, array: any): Promise<void> {
@@ -37,14 +35,15 @@ export class DynamoDBUtils {
       }
     };
 
-    await this.dynamodb.batchWriteItem(params).promise();
+    await this.db.getClient().batchWrite(params).promise();
   }
 
   public async executePartiQL(query: string): Promise<any[]> {
     const data = [];
     let nextTokenRun = null;
     do {
-      const { Items, NextToken } = await this.dynamodb
+      const { Items, NextToken } = await this.db
+        .getInstance()
         .executeStatement({
           Statement: query,
           NextToken: nextTokenRun

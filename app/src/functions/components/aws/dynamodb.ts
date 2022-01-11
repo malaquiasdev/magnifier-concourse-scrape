@@ -1,5 +1,6 @@
 import * as dotenv from "dotenv";
 import AWS from "aws-sdk";
+import { DocumentClient } from "aws-sdk/clients/dynamodb";
 
 dotenv.config({
   path: "../../.env"

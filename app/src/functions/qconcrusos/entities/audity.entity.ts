@@ -1,13 +1,15 @@
 import * as dotenv from "dotenv";
-import { DynamoDBUtils } from "../../utils/aws/dynamodb.utils";
 import { Audity } from "../types/audity.entity";
+import { Entity } from "./entity";
+import { Database } from "../../components/aws/database";
 
 dotenv.config();
 
-export class AudityEntity extends DynamoDBUtils {
+export class AudityEntity extends Entity {
   private tableName;
-  constructor() {
-    super();
+
+  constructor(db: Database) {
+    super(db);
     this.tableName = process.env.AUDITY_TABLE_NAME;
   }
 
