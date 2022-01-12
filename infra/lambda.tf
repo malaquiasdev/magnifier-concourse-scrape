@@ -33,7 +33,8 @@ resource "aws_lambda_function" "qconcursos_entrypoint" {
   layers           = [aws_lambda_layer_version.dependencies.arn]
   environment {
     variables = {
-      AUDITY_TABLE_NAME = aws_dynamodb_table.qconcursos_audity.name
+      AUDITY_TABLE_NAME  = aws_dynamodb_table.qconcursos_audity.name
+      NEXT_LAMBDA_INVOKE = aws_lambda_function.qconcursos_question.function_name
     }
   }
 }
@@ -52,6 +53,7 @@ resource "aws_lambda_function" "qconcursos_question" {
   layers           = [aws_lambda_layer_version.dependencies.arn]
   environment {
     variables = {
+      AUDITY_TABLE_NAME   = aws_dynamodb_table.qconcursos_audity.name
       QUESTION_TABLE_NAME = aws_dynamodb_table.qconcursos_questions.name
     }
   }

@@ -47,6 +47,15 @@ data "aws_iam_policy_document" "dynamodb_audity_table" {
   }
 }
 
+data "aws_iam_policy_document" "lambda_invoke" {
+  statement {
+    sid       = "AllowWorToInvokeLambda"
+    effect    = "Allow"
+    resources = ["arn:aws:lambda:${var.aws_region}:${var.aws_account_id}:function:*"]
+    actions   = ["lambda:InvokeFunction"]
+  }
+}
+
 resource "aws_iam_role" "qconcursos_entrypoint" {
   name               = "${var.lambda_qconcursos_prefix_name}-entrypoint-role"
   assume_role_policy = data.aws_iam_policy_document.lambda_assume_role.json
@@ -60,6 +69,11 @@ resource "aws_iam_role" "qconcursos_question" {
 resource "aws_iam_policy" "create_logs" {
   name   = "${var.lambda_qconcursos_prefix_name}-cw-logs-policy"
   policy = data.aws_iam_policy_document.lambda_create_logs_cloudwatch.json
+}
+
+resource "aws_iam_policy" "qconcursos_question_invoke" {
+  name   = "${var.lambda_qconcursos_prefix_name}-qconcursos_question_invoke"
+  policy = data.aws_iam_policy_document.lambda_invoke.json
 }
 
 resource "aws_iam_policy" "dynamodb_audity" {
@@ -87,8 +101,18 @@ resource "aws_iam_role_policy_attachment" "qconcursos_entrypoint_dynamo_audity_t
   role       = aws_iam_role.qconcursos_entrypoint.name
 }
 
+resource "aws_iam_role_policy_attachment" "qconcursos_question_dynamo_audity_table" {
+  policy_arn = aws_iam_policy.dynamodb_audity.arn
+  role       = aws_iam_role.qconcursos_question.name
+}
+
 resource "aws_iam_role_policy_attachment" "qconcursos_question_dynamo_question_table" {
   policy_arn = aws_iam_policy.dynamodb_question.arn
   role       = aws_iam_role.qconcursos_question.name
+}
+
+resource "aws_iam_role_policy_attachment" "qconcursos_entrypoint_invoke_lambda" {
+  policy_arn = aws_iam_policy.qconcursos_question_invoke.arn
+  role       = aws_iam_role.qconcursos_entrypoint.name
 }
 

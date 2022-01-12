@@ -4,6 +4,7 @@ import { Audity } from "../entities/types/audity";
 import { Database } from "../../../aws/database";
 import pino, { Logger } from "pino";
 import { Context } from "aws-lambda";
+import AWS, { Lambda } from "aws-sdk";
 
 export class EntryPointService {
   private db: Database;
