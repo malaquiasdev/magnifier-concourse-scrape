@@ -9,8 +9,10 @@ import { QuestionScrapyListService } from "./question.scrapy.list.service";
 import { Question } from "../../entities/types/question";
 import { QuestionEntity } from "../../entities/question.entity";
 import { Page } from "puppeteer";
+import { SQSUtils } from "../../../../aws/sqs";
 
 export class QuestionService {
+  private sqs: SQSUtils;
   private db: Database;
   private logger: Logger;
   private context: Context;
@@ -18,8 +20,10 @@ export class QuestionService {
   private questionAudity: QuestionAudity;
   private questionEntity: QuestionEntity;
   private nextUrl: string;
+  private mails: string[];
 
   constructor(context: Context) {
+    this.sqs = new SQSUtils();
     this.db = new Database();
     this.logger = pino();
     this.context = context;
@@ -29,8 +33,8 @@ export class QuestionService {
   }
 
   public async main(body: EntryPointInput): Promise<Question[]> {
-    this.logger.info(body);
     this.logger.info(`Going to page - ${body["url"]}`);
+    this.mails = body.mails;
     const browser = await ChromiumBrowser.create();
     try {
       const page = await browser.newPage();
@@ -38,17 +42,14 @@ export class QuestionService {
       const pagination = await new QuestionPaginationService(
         page
       ).getPagination(this.baseUrl);
-      this.nextUrl = pagination.nextPageUrl;
       this.logger.info(pagination);
       await this.questionAudity.audityFunction(
         body,
         this.main.name,
         this.context
       );
-      const questionScrapyListService = new QuestionScrapyListService(page);
-      const questions = await questionScrapyListService.scrapyQuestions(
-        body.url
-      );
+      const scrapyListService = new QuestionScrapyListService(page);
+      const questions = await scrapyListService.scrapyQuestions(body.url);
       if (Array.isArray(questions) && questions.length > 0) {
         await this.questionEntity.batchPersist(questions);
       } else {
@@ -56,7 +57,7 @@ export class QuestionService {
       }
       await this.scrapyMoreQuestions(
         page,
-        questionScrapyListService,
+        scrapyListService,
         body.url,
         pagination.nextPageUrl
       );
@@ -71,15 +72,14 @@ export class QuestionService {
 
   private async scrapyMoreQuestions(
     page: Page,
-    questionScrapyListService: QuestionScrapyListService,
+    scrapyListService: QuestionScrapyListService,
     url: string,
     nextPageUrl: string
   ): Promise<void> {
+    this.nextUrl = nextPageUrl;
     do {
-      this.logger.info(`Going to next page - ${nextPageUrl}`);
-
+      this.logger.info(`Going to next page - ${this.nextUrl}`);
       await page.waitForTimeout((Math.floor(Math.random() * 12) + 7) * 1000);
-
       await page.evaluate(async () => {
         await new Promise((resolve, _) => {
           var totalHeight = 0;
@@ -88,7 +88,6 @@ export class QuestionService {
             var scrollHeight = document.body.scrollHeight;
             window.scrollBy(0, distance);
             totalHeight += distance;
-
             if (totalHeight >= scrollHeight) {
               clearInterval(timer);
               resolve(totalHeight);
@@ -96,20 +95,17 @@ export class QuestionService {
           }, 100);
         });
       });
-
       await page.click(
         "body > div.q-root > main > div.container > nav > div > a.q-next.btn.btn-default"
       );
       await page.waitForSelector(
         "body > div.q-root > main > div.container > div.q-questions-list.js-questions-list > div"
       );
-
       const pagination = await new QuestionPaginationService(
         page
       ).getPagination(this.baseUrl);
       this.nextUrl = pagination.nextPageUrl;
-
-      const questions = await questionScrapyListService.scrapyQuestions(url);
+      const questions = await scrapyListService.scrapyQuestions(url);
       if (Array.isArray(questions) && questions.length > 0) {
         await this.questionEntity.batchPersist(questions);
       } else {
@@ -118,12 +114,24 @@ export class QuestionService {
     } while (this.nextUrl);
   }
 
-  public async setTimout(): Promise<any> {
+  public async startClockTimer(milliseconds: number): Promise<void> {
     return new Promise((resolve) => {
-      setTimeout(() => {
-        console.log(`estou dentro do timeout: ${this.nextUrl}`);
-        resolve({ statusCode: 200, message: "Sorry, your task timed out!" });
-      }, 2.9 * 60 * 1000);
+      setTimeout(async () => {
+        const msg = `next page to called after waiting time: ${this.nextUrl}`;
+        this.logger.info(msg);
+        const item = await this.sqs.sendMessage(msg, {
+          url: {
+            DataType: "String",
+            StringValue: this.nextUrl
+          },
+          mails: {
+            DataType: "String",
+            StringValue: JSON.stringify(this.mails)
+          }
+        });
+        this.logger.info(item);
+        resolve();
+      }, milliseconds);
     });
   }
 }

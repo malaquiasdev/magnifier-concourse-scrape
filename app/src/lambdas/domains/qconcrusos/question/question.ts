@@ -20,10 +20,13 @@ export async function handler(
 ): Promise<APIGatewayProxyResult> {
   logger.info(event);
   logger.info(context);
-  const body: EntryPointInput = getBody(event);
-  console.log("body", body);
-  console.log("url", body.url);
-  const service = new QuestionService(context);
-  await Promise.race([service.main(body), service.setTimout()]);
-  return Gateway.jsonSerializer(202, { msg: "Accept" });
+  try {
+    const body: EntryPointInput = getBody(event);
+    const service = new QuestionService(context);
+    await Promise.race([service.main(body), service.setTimout()]);
+  } catch (error) {
+    logger.error(error);
+  } finally {
+    return Gateway.jsonSerializer(200, { msg: "finally" });
+  }
 }
