@@ -17,6 +17,7 @@ export class QuestionService {
   private baseUrl: string;
   private questionAudity: QuestionAudity;
   private questionEntity: QuestionEntity;
+  private nextUrl: string;
 
   constructor(context: Context) {
     this.db = new Database();
@@ -27,26 +28,27 @@ export class QuestionService {
     this.questionEntity = new QuestionEntity(this.db);
   }
 
-  public async main({ url, mails }: EntryPointInput): Promise<Question[]> {
-    this.logger.info(`Going to page - ${url}`);
+  public async main(body: EntryPointInput): Promise<Question[]> {
+    this.logger.info(body);
+    this.logger.info(`Going to page - ${body["url"]}`);
     const browser = await ChromiumBrowser.create();
     try {
       const page = await browser.newPage();
-      await page.goto(url, { waitUntil: "networkidle0" });
+      await page.goto(body.url, { waitUntil: "networkidle0" });
       const pagination = await new QuestionPaginationService(
         page
       ).getPagination(this.baseUrl);
+      this.nextUrl = pagination.nextPageUrl;
       this.logger.info(pagination);
       await this.questionAudity.audityFunction(
-        { url, mails },
+        body,
         this.main.name,
         this.context
       );
-      const questionScrapyListService = new QuestionScrapyListService(
-        page,
-        this.db
+      const questionScrapyListService = new QuestionScrapyListService(page);
+      const questions = await questionScrapyListService.scrapyQuestions(
+        body.url
       );
-      const questions = await questionScrapyListService.scrapyQuestions(url);
       if (Array.isArray(questions) && questions.length > 0) {
         await this.questionEntity.batchPersist(questions);
       } else {
@@ -55,7 +57,7 @@ export class QuestionService {
       await this.scrapyMoreQuestions(
         page,
         questionScrapyListService,
-        url,
+        body.url,
         pagination.nextPageUrl
       );
       await browser.close();
@@ -75,7 +77,7 @@ export class QuestionService {
   ): Promise<void> {
     do {
       this.logger.info(`Going to next page - ${nextPageUrl}`);
-      
+
       await page.waitForTimeout((Math.floor(Math.random() * 12) + 7) * 1000);
 
       await page.evaluate(async () => {
@@ -105,7 +107,7 @@ export class QuestionService {
       const pagination = await new QuestionPaginationService(
         page
       ).getPagination(this.baseUrl);
-      nextPageUrl = pagination.nextPageUrl;
+      this.nextUrl = pagination.nextPageUrl;
 
       const questions = await questionScrapyListService.scrapyQuestions(url);
       if (Array.isArray(questions) && questions.length > 0) {
@@ -113,6 +115,15 @@ export class QuestionService {
       } else {
         throw Error("Questions not found");
       }
-    } while (nextPageUrl);
+    } while (this.nextUrl);
+  }
+
+  public async setTimout(): Promise<any> {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        console.log(`estou dentro do timeout: ${this.nextUrl}`);
+        resolve({ statusCode: 200, message: "Sorry, your task timed out!" });
+      }, 2.9 * 60 * 1000);
+    });
   }
 }

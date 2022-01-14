@@ -1,24 +1,19 @@
-import { Logger } from "pino";
 import { Page } from "puppeteer";
-import { Database } from "../../../../aws/database";
 import { Question, Header, Info, Body } from "../../entities/types/question";
 import { QUESTIONS_LIST_SELECTORS } from "./question.selectors";
 
 export class QuestionScrapyListService {
   private page: Page;
-  private db: Database;
-  private logger: Logger;
 
-  constructor(page: Page, db: Database) {
+  constructor(page: Page) {
     this.page = page;
-    this.db = db;
   }
 
   public async scrapyQuestions(url: string): Promise<any> {
     return this.page.evaluate(
       (QUESTIONS_LIST_SELECTORS: any, url: string) => {
         const result: Question[] = [];
-        const filter: string = url.split("?")[1];
+        const filter: string = url.split("?")[1].split("&page")[0];
         document
           .querySelectorAll(QUESTIONS_LIST_SELECTORS.LIST_SELECTORS)
           .forEach((e: Element) => {
