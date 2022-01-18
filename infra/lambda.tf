@@ -53,7 +53,7 @@ resource "aws_lambda_function" "qconcursos_question" {
   layers           = [aws_lambda_layer_version.dependencies.arn]
   environment {
     variables = {
-      AWS_QUEUE_URL       = aws_sqs_queue.qconcursos_questions.name
+      AWS_QUEUE_URL       = aws_sqs_queue.qconcursos_questions.id
       AUDITY_TABLE_NAME   = aws_dynamodb_table.qconcursos_audity.name
       QUESTION_TABLE_NAME = aws_dynamodb_table.qconcursos_questions.name
     }

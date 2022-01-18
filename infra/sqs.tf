@@ -9,6 +9,7 @@ resource "aws_sqs_queue" "qconcursos_questions_ddl" {
 
 resource "aws_sqs_queue" "qconcursos_questions" {
   name                        = "${var.project_name}-qconcursos-questions"
+  delay_seconds               = 900
   message_retention_seconds   = 86400
   visibility_timeout_seconds  = 43200
   fifo_queue                  = false
