@@ -44,7 +44,7 @@ resource "aws_lambda_function" "qconcursos_question" {
   handler          = "./domains/qconcrusos/question/question.handler"
   description      = ""
   runtime          = "nodejs14.x"
-  timeout          = 200
+  timeout          = 900
   memory_size      = 1024
   role             = aws_iam_role.qconcursos_question.arn
   s3_bucket        = aws_s3_bucket.root.id

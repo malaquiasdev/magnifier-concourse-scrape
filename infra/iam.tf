@@ -102,6 +102,11 @@ resource "aws_iam_policy" "dynamodb_question" {
   policy = data.aws_iam_policy_document.dynamodb_questions_table.json
 }
 
+resource "aws_iam_policy" "qconcursos_question_sqs" {
+  name   = "${var.lambda_qconcursos_prefix_name}-sqs-question-policy"
+  policy = data.aws_iam_policy_document.qconcursos_questions.json
+}
+
 resource "aws_iam_role_policy_attachment" "qconcursos_entrypoint_create_logs" {
   policy_arn = aws_iam_policy.create_logs.arn
   role       = aws_iam_role.qconcursos_entrypoint.name
@@ -130,6 +135,11 @@ resource "aws_iam_role_policy_attachment" "qconcursos_question_dynamo_question_t
 resource "aws_iam_role_policy_attachment" "qconcursos_entrypoint_invoke_lambda" {
   policy_arn = aws_iam_policy.qconcursos_question_invoke.arn
   role       = aws_iam_role.qconcursos_entrypoint.name
+}
+
+resource "aws_iam_role_policy_attachment" "qconcursos_question_sqs_queu" {
+  policy_arn = aws_iam_policy.qconcursos_question_sqs.arn
+  role       = aws_iam_role.qconcursos_question.name
 }
 
 resource "aws_sqs_queue_policy" "qconcursos_questions_ddl" {

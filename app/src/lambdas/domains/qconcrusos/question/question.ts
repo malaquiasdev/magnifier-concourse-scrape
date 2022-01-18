@@ -7,6 +7,10 @@ import { QuestionService } from "./service/question.service";
 const logger = pino();
 
 function getBody(event: any): EntryPointInput {
+  const body: EntryPointInput = JSON.parse(event.body ?? "{}");
+  if (body.url && body.mails) {
+    return body;
+  }
   const attributes = event.Records[0].messageAttributes;
   return {
     url: attributes.url.stringValue,
@@ -25,7 +29,7 @@ export async function handler(
     const service = new QuestionService(context);
     await Promise.race([
       service.main(body),
-      service.startClockTimer(context.getRemainingTimeInMillis())
+      service.startClockTimer(14.9 * 60 * 1000)
     ]);
   } catch (error) {
     logger.error(error);
