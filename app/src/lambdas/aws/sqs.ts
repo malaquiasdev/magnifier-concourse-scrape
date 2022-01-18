@@ -11,13 +11,27 @@ export class SQSUtils {
 
   public async sendMessage(
     messageBody: string,
-    messageAttributes: any
-  ): Promise<any> {
+    messageAttributes: SQS.Types.MessageBodyAttributeMap
+  ): Promise<SQS.Types.SendMessageResult> {
     return await this.sqs
       .sendMessage({
         QueueUrl: this.queueUrl,
         MessageBody: messageBody,
         MessageAttributes: messageAttributes
+      })
+      .promise();
+  }
+
+  public async registerToRedrive(
+    messageAttributes: SQS.Types.MessageBodyAttributeMap,
+    delaySeconds: number = 0
+  ): Promise<SQS.Types.SendMessageResult> {
+    return await this.sqs
+      .sendMessage({
+        QueueUrl: this.queueUrl,
+        MessageBody: "Redrive",
+        MessageAttributes: messageAttributes,
+        DelaySeconds: delaySeconds
       })
       .promise();
   }
