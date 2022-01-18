@@ -56,6 +56,22 @@ data "aws_iam_policy_document" "lambda_invoke" {
   }
 }
 
+data "aws_iam_policy_document" "qconcursos_questions_ddl" {
+  statement {
+    effect    = "Allow"
+    resources = [aws_sqs_queue.qconcursos_questions_ddl.arn]
+    actions   = ["sqs:*"]
+  }
+}
+
+data "aws_iam_policy_document" "qconcursos_questions" {
+  statement {
+    effect    = "Allow"
+    resources = [aws_sqs_queue.qconcursos_questions.arn]
+    actions   = ["sqs:*"]
+  }
+}
+
 resource "aws_iam_role" "qconcursos_entrypoint" {
   name               = "${var.lambda_qconcursos_prefix_name}-entrypoint-role"
   assume_role_policy = data.aws_iam_policy_document.lambda_assume_role.json
@@ -116,3 +132,12 @@ resource "aws_iam_role_policy_attachment" "qconcursos_entrypoint_invoke_lambda" 
   role       = aws_iam_role.qconcursos_entrypoint.name
 }
 
+resource "aws_sqs_queue_policy" "qconcursos_questions_ddl" {
+  queue_url = aws_sqs_queue.qconcursos_questions_ddl.id
+  policy    = data.aws_iam_policy_document.qconcursos_questions_ddl.json
+}
+
+resource "aws_sqs_queue_policy" "qconcuros_questions" {
+  queue_url = aws_sqs_queue.qconcursos_questions_ddl.id
+  policy    = data.aws_iam_policy_document.qconcursos_questions_ddl.json
+}

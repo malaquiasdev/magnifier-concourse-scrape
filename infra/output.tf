@@ -25,3 +25,11 @@ output "lambdas" {
 output "apigateway_url" {
   value = aws_apigatewayv2_stage.this.invoke_url
 }
+
+output "qconcursos_questions" {
+  value = aws_sqs_queue.qconcursos_questions
+}
+
+output "qconcursos_questions_ddl" {
+  value = aws_sqs_queue.qconcursos_questions_ddl
+}

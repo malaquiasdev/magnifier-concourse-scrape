@@ -23,7 +23,10 @@ export async function handler(
   try {
     const body: EntryPointInput = getBody(event);
     const service = new QuestionService(context);
-    await Promise.race([service.main(body), service.setTimout()]);
+    await Promise.race([
+      service.main(body),
+      service.startClockTimer(context.getRemainingTimeInMillis())
+    ]);
   } catch (error) {
     logger.error(error);
   } finally {
