@@ -24,15 +24,22 @@ export async function handler(
 ): Promise<APIGatewayProxyResult> {
   logger.info(event);
   logger.info(context);
+  const service = new QuestionService(context);
   try {
     const body: EntryPointInput = getBody(event);
-    const service = new QuestionService(context);
     await Promise.race([
       service.main(body),
-      service.startClockTimer(14.9 * 60 * 1000)
+      service.startClockTimer(14.5 * 60 * 1000)
     ]);
   } catch (error) {
     logger.error(error);
+    if (
+      error.type === "TimeoutError" ||
+      error.message.includes("No node found for selector") ||
+      error.message.includes("waiting for selector")
+    ) {
+      await service.startClockTimer(0);
+    }
   } finally {
     return Gateway.jsonSerializer(200, { msg: "finally" });
   }

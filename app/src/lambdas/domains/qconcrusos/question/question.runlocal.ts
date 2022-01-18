@@ -32,7 +32,7 @@ async function questionServiceLocal() {
   };
 
   const input: EntryPointInput = {
-    url: "https://www.qconcursos.com/questoes-de-concursos/questoes?institute_ids%5B%5D=20&knowledge_area_ids%5B%5D=10&page=2",
+    url: "https://www.qconcursos.com/questoes-de-concursos/questoes?institute_ids%5B%5D=5752",
     mails: ["x.aaa@gmail.com"]
   };
 
