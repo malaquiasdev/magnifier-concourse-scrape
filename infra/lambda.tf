@@ -53,8 +53,18 @@ resource "aws_lambda_function" "qconcursos_question" {
   layers           = [aws_lambda_layer_version.dependencies.arn]
   environment {
     variables = {
+      AWS_QUEUE_URL       = aws_sqs_queue.qconcursos_questions.name
       AUDITY_TABLE_NAME   = aws_dynamodb_table.qconcursos_audity.name
       QUESTION_TABLE_NAME = aws_dynamodb_table.qconcursos_questions.name
     }
   }
+}
+
+resource "aws_lambda_event_source_mapping" "qconcursos_questions_sqs_queue" {
+  event_source_arn = aws_sqs_queue.qconcursos_questions.arn
+  function_name    = aws_lambda_function.qconcursos_question.function_name
+  enabled          = true
+  depends_on = [
+    aws_iam_role.qconcursos_question
+  ]
 }
