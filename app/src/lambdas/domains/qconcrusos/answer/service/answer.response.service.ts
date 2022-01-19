@@ -1,6 +1,5 @@
 import { Page } from "puppeteer";
 import { Question } from "../../entities/types/question";
-import { ANSWER_ALTERNATIVE_PREFIX } from "./answer.selectors";
 import {
   ANSWER_ALTERNATIVE_PREFIX,
   USER_PROFILE_AFTER_LOGIN,
