@@ -6,6 +6,8 @@ import { EntryPointService } from "./entrypoint.service";
 import { Gateway } from "../../../utils/gateway";
 import { Validate } from "../../../utils/validate";
 import { LambdaUtils } from "../../../aws/lambda";
+import { Database } from "../../../aws/database";
+import { AudityEntity } from "../entities/audity.entity";
 
 dotenv.config();
 const logger = pino();
@@ -18,12 +20,19 @@ export async function handler(
   logger.info(context);
 
   const body: EntryPointInput = JSON.parse(event.body ?? "{}");
-  if (!Validate.isUrl(body.url) || !body.mails) {
-    return Gateway.jsonSerializer(400, { msg: "Bad Request" });
-  }
-  const service = new EntryPointService();
-  await service.saveEntryPointSate(body, context);
+
   const lambdaUtils = new LambdaUtils();
-  await lambdaUtils.invokeNextLambda(process.env.NEXT_LAMBDA_INVOKE, event);
-  return Gateway.jsonSerializer(202, { msg: "Accept" });
+  const entity = new AudityEntity(new Database(), context);
+  const service = new EntryPointService(logger, entity, lambdaUtils);
+
+  try {
+    if (!Validate.isUrl(body.url) || !body.mails) {
+      return Gateway.jsonSerializer(400, { msg: "Bad Request" });
+    }
+    await service.saveEntryPointSate(event, process.env.NEXT_LAMBDA_INVOKE);
+    return Gateway.jsonSerializer(202, { msg: "Accept" });
+  } catch (error) {
+    logger.error(error);
+    return Gateway.jsonSerializer(500, { msg: "Internal Server Error" });
+  }
 }

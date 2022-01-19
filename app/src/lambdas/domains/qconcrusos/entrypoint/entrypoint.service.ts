@@ -1,32 +1,32 @@
 import { AudityEntity } from "../entities/audity.entity";
 import { EntryPointInput } from "./types/entrypoint.input";
 import { Audity } from "../entities/types/audity";
-import { Database } from "../../../aws/database";
-import pino, { Logger } from "pino";
-import { Context } from "aws-lambda";
-import AWS, { Lambda } from "aws-sdk";
+import { Logger } from "pino";
+import { LambdaUtils } from "../../../aws/lambda";
 
 export class EntryPointService {
-  private db: Database;
   private logger: Logger;
+  private audity: AudityEntity;
+  private lambdaUtils: LambdaUtils;
 
-  constructor() {
-    this.db = new Database();
-    this.logger = pino();
+  constructor(logger: Logger, entity: AudityEntity, lambdaUtils: LambdaUtils) {
+    this.logger = logger;
+    this.audity = entity;
+    this.lambdaUtils = lambdaUtils;
   }
 
   public async saveEntryPointSate(
-    { url, mails }: EntryPointInput,
-    context: Context
+    event: any,
+    nextLambdaName: string
   ): Promise<void> {
     try {
-      const audity: Audity = {
-        page: url,
-        mails: mails,
+      await this.audity.persist({
+        page: event.body.url,
+        mails: event.body.mails,
         serviceName: this.saveEntryPointSate.name,
-        filter: url.split("?")[1]
-      };
-      await new AudityEntity(this.db, context).persist(audity);
+        filter: event.body.url.split("?")[1]
+      });
+      await this.lambdaUtils.invokeNextLambda(nextLambdaName, event);
     } catch (error) {
       this.logger.error(error);
       throw error;
