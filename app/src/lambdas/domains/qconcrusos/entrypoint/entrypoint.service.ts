@@ -1,6 +1,4 @@
 import { AudityEntity } from "../entities/audity.entity";
-import { EntryPointInput } from "./types/entrypoint.input";
-import { Audity } from "../entities/types/audity";
 import { Logger } from "pino";
 import { LambdaUtils } from "../../../aws/lambda";
 
