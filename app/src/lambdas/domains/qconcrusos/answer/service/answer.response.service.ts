@@ -14,8 +14,7 @@ export class AnswerResponseService {
     questionUrl: string,
     questionId: string
   ): Promise<string> {
-    await loggedPage.goto(questionUrl);
-
+    await loggedPage.goto("https://www.qconcursos.com".concat(questionUrl));
     await loggedPage.evaluate(
       (questionId: number, ANSWER_ALTERNATIVE_PREFIX: string) => {
         var alternative = document.getElementsByName(

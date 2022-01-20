@@ -25,8 +25,8 @@ export class AnswerService {
     this.loginService = new AnswerLoginService(this.logger);
     this.responseService = new AnswerResponseService();
     this.login = {
-      email: process.env.LOGIN_EMAIL,
-      password: process.env.LOGIN_PASSWORD
+      email: process.env.QCONCURSOS_LOGIN_EMAIL,
+      password: process.env.QCONCURSOS_LOGIN_PASSWORD
     };
   }
 
@@ -38,9 +38,9 @@ export class AnswerService {
       const questions = await this.questionEntity.findByFilterAndAnswerNull(
         this.filter
       );
+      this.logger.info(`Quantity questions: ${questions.length}`);
       const page = await browser.newPage();
       const loggedPage = await this.loginService.login(page, this.login);
-      this.logger.info(`Quantity questions: ${questions.length}`);
       for (const item of questions) {
         const correctAnswer = await this.responseService.scrapyAnswers(
           loggedPage,
@@ -50,12 +50,12 @@ export class AnswerService {
         item.answer = correctAnswer;
         await this.questionEntity.persist(item);
       }
-      await browser.close();
       return questions;
     } catch (error) {
-      await browser.close();
       this.logger.error(error);
       throw error;
+    } finally {
+      //await browser.close();
     }
   }
 
