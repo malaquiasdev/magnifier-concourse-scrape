@@ -10,7 +10,7 @@ export class LambdaUtils {
 
   public async invokeNextLambda(
     functionName: string,
-    event: APIGatewayEvent
+    event: any
   ): Promise<void> {
     const params: InvokeAsyncRequest = {
       FunctionName: functionName,

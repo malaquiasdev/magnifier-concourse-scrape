@@ -12,7 +12,7 @@ export class QuestionScrapyListService {
   public async scrapyQuestions(url: string): Promise<any> {
     return this.page.evaluate(
       (QUESTIONS_LIST_SELECTORS: any, url: string) => {
-        const result: Question[] = [];
+        const result = [];
         const filter: string = url.split("?")[1].split("&page")[0];
         document
           .querySelectorAll(QUESTIONS_LIST_SELECTORS.LIST_SELECTORS)

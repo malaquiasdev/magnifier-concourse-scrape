@@ -10,6 +10,7 @@ import { Question } from "../../entities/types/question";
 import { QuestionEntity } from "../../entities/question.entity";
 import { Page } from "puppeteer";
 import { SQSUtils } from "../../../../aws/sqs";
+import { LambdaUtils } from "../../../../aws/lambda";
 
 export class QuestionService {
   private sqs: SQSUtils;
@@ -19,17 +20,21 @@ export class QuestionService {
   private baseUrl: string;
   private questionAudity: QuestionAudity;
   private questionEntity: QuestionEntity;
+  private lambdaUtils: LambdaUtils;
   private nextUrl: string;
   private mails: string[];
+  private nextLambdaInvokeName: string;
 
   constructor(context: Context) {
     this.sqs = new SQSUtils();
     this.db = new Database();
+    this.lambdaUtils = new LambdaUtils();
     this.logger = pino();
     this.context = context;
     this.baseUrl = "https://www.qconcursos.com";
     this.questionAudity = new QuestionAudity(this.db, this.logger);
     this.questionEntity = new QuestionEntity(this.db);
+    this.nextLambdaInvokeName = process.env.NEXT_LAMBDA_INVOKE;
   }
 
   public async main(body: EntryPointInput): Promise<Question[]> {
@@ -62,6 +67,9 @@ export class QuestionService {
         pagination.nextPageUrl
       );
       await browser.close();
+      await this.lambdaUtils.invokeNextLambda(this.nextLambdaInvokeName, {
+        body: questions[0].filter
+      });
       return questions;
     } catch (error) {
       await browser.close();

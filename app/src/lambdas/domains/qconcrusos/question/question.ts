@@ -3,6 +3,7 @@ import pino from "pino";
 import { Gateway } from "../../../utils/gateway";
 import { EntryPointInput } from "../entrypoint/types/entrypoint.input";
 import { QuestionService } from "./service/question.service";
+import { LambdaUtils } from "../../../aws/lambda";
 
 const logger = pino();
 
