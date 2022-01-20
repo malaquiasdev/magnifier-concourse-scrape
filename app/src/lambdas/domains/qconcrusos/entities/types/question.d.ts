@@ -31,4 +31,4 @@ export type Body = {
   answer: string;
 };
 
-export type Question = Header | Info | Body | string;
+export type Question = Header & Info & Body & string;
