@@ -29,7 +29,7 @@ export async function handler(
     if (!Validate.isUrl(body.url) || !body.mails) {
       return Gateway.jsonSerializer(400, { msg: "Bad Request" });
     }
-    await service.saveEntryPointSate(event, process.env.NEXT_LAMBDA_INVOKE);
+    await service.saveEntryPointSate(body, process.env.NEXT_LAMBDA_INVOKE, event);
     return Gateway.jsonSerializer(202, { msg: "Accept" });
   } catch (error) {
     logger.error(error);

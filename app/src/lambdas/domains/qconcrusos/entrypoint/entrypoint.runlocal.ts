@@ -36,8 +36,8 @@ async function entrypointRunLocal() {
     }
   };
 
-  const service = new EntryPointService();
-  await service.saveEntryPointSate(input, context);
+  //const service = new EntryPointService();
+  //await service.saveEntryPointSate(input, context);
 }
 
 entrypointRunLocal();

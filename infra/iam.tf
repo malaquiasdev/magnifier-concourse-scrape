@@ -168,6 +168,11 @@ resource "aws_iam_role_policy_attachment" "qconcursos_question_dynamo_question_t
   role       = aws_iam_role.qconcursos_question.name
 }
 
+resource "aws_iam_role_policy_attachment" "qconcursos_answer_dynamo_question_table" {
+  policy_arn = aws_iam_policy.dynamodb_question.arn
+  role       = aws_iam_role.qconcursos_answer.name
+}
+
 resource "aws_iam_role_policy_attachment" "qconcursos_entrypoint_invoke_lambda" {
   policy_arn = aws_iam_policy.qconcursos_question_invoke.arn
   role       = aws_iam_role.qconcursos_entrypoint.name

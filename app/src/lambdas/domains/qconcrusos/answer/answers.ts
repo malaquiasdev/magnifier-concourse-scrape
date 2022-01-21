@@ -11,7 +11,7 @@ function getFilter(event: any): string {
   if (body.filter) {
     return body.filter;
   }
-  return event.Records[0].messageAttributes.filter;
+  return event.Records[0].messageAttributes.filter.stringValue;
 }
 
 export async function handler(

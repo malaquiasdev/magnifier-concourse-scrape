@@ -1,6 +1,7 @@
 import { AudityEntity } from "../entities/audity.entity";
 import { Logger } from "pino";
 import { LambdaUtils } from "../../../aws/lambda";
+import { EntryPointInput } from "./types/entrypoint.input";
 
 export class EntryPointService {
   private logger: Logger;
@@ -14,15 +15,16 @@ export class EntryPointService {
   }
 
   public async saveEntryPointSate(
-    event: any,
-    nextLambdaName: string
+    { url, mails }: EntryPointInput,
+    nextLambdaName: string,
+    event: any
   ): Promise<void> {
     try {
       await this.audity.persist({
-        page: event.body.url,
-        mails: event.body.mails,
+        page: url,
+        mails: mails,
         serviceName: this.saveEntryPointSate.name,
-        filter: event.body.url.split("?")[1]
+        filter: url.split("?")[1]
       });
       await this.lambdaUtils.invokeNextLambda(nextLambdaName, event);
     } catch (error) {
