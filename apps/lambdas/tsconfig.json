@@ -1,0 +1,36 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "target": "es2018",
+    "lib": ["es2018", "dom"],
+    "typeRoots": ["node_modules/@types"],
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node",
+    "module": "commonjs",
+    "pretty": true,
+    "sourceMap": true,
+    "declaration": true,
+    "outDir": "dist",
+    "allowJs": true,
+    "noEmit": false,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "importHelpers": true,
+    "baseUrl": "src",
+    "paths": {
+      "@/*": ["*"],
+      "@aws/*": ["aws/*"],
+      "@utils/*": ["utils/*"],
+      "@qconcursos/types/*": ["domain/qconcursos/types/*"],
+      "@qconcursos/entities/*": ["domain/qconcursos/entities/*"],
+      "@qconcursos/controllers/*": ["domain/qconcursos/controllers/*"],
+      "@qconcursos/enums/*": ["domain/qconcursos/enums/*"],
+      "@qconcursos/services/*": ["domain/qconcursos/services/*"]
+    }
+  },
+  "include": ["src/**/*.ts", "src/**/*.json", ".env"],
+  "exclude": ["node_modules", "src/http", "src/logs", "src/tests"]
+}
