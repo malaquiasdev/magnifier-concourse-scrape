@@ -3,6 +3,7 @@ export type Header = {
   url: string;
   subjectUrl?: string;
   subjectName?: string;
+  filter?: string;
 };
 
 export type Info = {
