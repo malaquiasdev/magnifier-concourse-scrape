@@ -6,6 +6,7 @@
   "license": "ISC",
   "scripts": {
     "build": "tsc && tsc-alias",
+    "prod": "rm -rf ../../../build/ && rm -rf node_modules && yarn build",
     "test": "jest --forceExit --detectOpenHandles",
     "lint": "eslint --ignore-path .gitignore --ext .ts src/",
     "lint:fix": "npm run lint -- --fix"

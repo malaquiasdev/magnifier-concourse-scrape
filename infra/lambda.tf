@@ -21,7 +21,7 @@ resource "aws_lambda_layer_version" "dependencies" {
 
 resource "aws_lambda_function" "qconcursos_entrypoint" {
   function_name    = "${var.lambda_qconcursos_prefix_name}-entrypoint"
-  handler          = "./domains/qconcrusos/entrypoint/entrypoint.handler"
+  handler          = "./domain/qconcursos/handler.entrypointHandler"
   description      = "Validate the scrappe schedule and start the process calling questions function"
   runtime          = "nodejs14.x"
   timeout          = 30
@@ -41,7 +41,7 @@ resource "aws_lambda_function" "qconcursos_entrypoint" {
 
 resource "aws_lambda_function" "qconcursos_question" {
   function_name    = "${var.lambda_qconcursos_prefix_name}-question"
-  handler          = "./domains/qconcrusos/question/question.handler"
+  handler          = "./domain/qconcursos/handler.questionHandler"
   description      = ""
   runtime          = "nodejs14.x"
   timeout          = 900
