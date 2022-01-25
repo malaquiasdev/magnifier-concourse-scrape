@@ -2,6 +2,7 @@ import * as path from 'path';
 import dotenv from 'dotenv';
 import { Database } from '@aws/database';
 import { EntryPointController } from '@qconcursos/controllers/entrypoint.controller';
+import { QuestionController } from '@qconcursos/controllers/question.controller';
 import { Context } from 'aws-lambda';
 
 dotenv.config({

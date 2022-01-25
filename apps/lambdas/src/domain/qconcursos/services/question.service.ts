@@ -1,6 +1,5 @@
-import pino, { Logger } from 'pino';
+import { Logger } from 'pino';
 import { Page } from 'puppeteer';
-import { Database } from '@aws/database';
 import { SQSUtils } from '@aws/sqs';
 import { LambdaUtils } from '@aws/lambda';
 import { ChromiumBrowser } from '@utils/chromium.browser';
@@ -12,7 +11,6 @@ import { EntryPointInput } from '@qconcursos/types/entrypoint.input';
 
 export class QuestionService {
   private sqs: SQSUtils;
-  private db: Database;
   private logger: Logger;
   private baseUrl: string;
   private questionEntity: QuestionEntity;
@@ -21,17 +19,16 @@ export class QuestionService {
   private mails: string[];
   private nextLambdaInvokeName: string;
 
-  constructor() {
-    this.sqs = new SQSUtils();
-    this.db = new Database();
+  constructor(logger: Logger, sqs: SQSUtils, entity: QuestionEntity, nextLambdaName: string) {
+    this.logger = logger;
+    this.sqs = sqs;
     this.lambdaUtils = new LambdaUtils();
-    this.logger = pino();
     this.baseUrl = 'https://www.qconcursos.com';
-    this.questionEntity = new QuestionEntity(this.db);
-    this.nextLambdaInvokeName = process.env.NEXT_LAMBDA_INVOKE;
+    this.questionEntity = entity;
+    this.nextLambdaInvokeName = nextLambdaName;
   }
 
-  public async main(body: EntryPointInput): Promise<Question[]> {
+  public async scrapyQuestions(body: EntryPointInput): Promise<Question[]> {
     this.logger.info(`Going to page - ${body['url']}`);
     this.mails = body.mails;
     const browser = await ChromiumBrowser.create();
@@ -94,23 +91,17 @@ export class QuestionService {
   }
 
   public async startClockTimer(milliseconds: number): Promise<void> {
-    return new Promise(resolve => {
-      setTimeout(async () => {
-        const msg = `next page to called after waiting time: ${this.nextUrl}`;
-        this.logger.info(msg);
-        const item = await this.sqs.sendMessage(msg, {
-          url: {
-            DataType: 'String',
-            StringValue: this.nextUrl,
-          },
-          mails: {
-            DataType: 'String',
-            StringValue: JSON.stringify(this.mails),
-          },
-        });
-        this.logger.info(item);
-        resolve();
-      }, milliseconds);
-    });
+    const msg = `next page to called after waiting time: ${this.nextUrl}`;
+    const msgAttr = {
+      url: {
+        DataType: 'String',
+        StringValue: this.nextUrl,
+      },
+      mails: {
+        DataType: 'String',
+        StringValue: JSON.stringify(this.mails),
+      },
+    };
+    this.sqs.registerToRedrive(msg, msgAttr, milliseconds);
   }
 }
